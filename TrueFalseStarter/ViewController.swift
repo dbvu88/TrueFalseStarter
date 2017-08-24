@@ -11,11 +11,19 @@ import GameKit
 import AudioToolbox
 
 class ViewController: UIViewController {
-    
+    // number of given questions per round
     let questionsPerRound = 4
+    
+    // number of questions had been asked
     var questionsAsked = 0
+    
+    // number of questions answered correctly also known as score
     var correctQuestions = 0
+    
+    // collection of questions had been selected randomly
     var indexOfSelectedQuestion: Int = GKRandomSource.sharedRandom().nextInt(upperBound: trivia.count)
+    
+    // current question ask
     var selectedQuestions: [Int] = []
     
     var gameSound: SystemSoundID = 0
@@ -37,8 +45,21 @@ class ViewController: UIViewController {
     @IBOutlet weak var forthOptionButton: UIButton!
 
     
-    @IBOutlet weak var playAgainButton: UIButton!
+    @IBOutlet weak var nextAction: UIButton!
 
+    @IBAction func getAction(_ sender: UIButton) {
+        
+        let action : String = sender.currentTitle!
+        switch action
+        {
+        case "Next Question" : displayQuestion()
+        case "See My Score" : displayScore()
+        case "Play Again" : playAgain()
+        default : displayQuestion()
+        }
+    }
+    
+    // hide status bar
     override var prefersStatusBarHidden: Bool {
         return true
     }
@@ -57,11 +78,26 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    // display the current question
     func displayQuestion() {
+        // show all options buttons
+        firstOptionButton.isHidden = false
+        secondOptionButton.isHidden = false
+        thirdOptionButton.isHidden = false
+        forthOptionButton.isHidden = false
         
+        // enable all option buttons
+        firstOptionButton.isEnabled = true
+        secondOptionButton.isEnabled = true
+        thirdOptionButton.isEnabled = true
+        forthOptionButton.isEnabled = true
+        
+        // validate new question to avoid repeating question
         while selectedQuestions.contains(indexOfSelectedQuestion) {
             indexOfSelectedQuestion = GKRandomSource.sharedRandom().nextInt(upperBound: trivia.count)
         }
+        
+        // keep track of all asked questions
         selectedQuestions.append(indexOfSelectedQuestion)
         let quiz = trivia[indexOfSelectedQuestion]
         questionField.text = quiz.question
@@ -72,7 +108,7 @@ class ViewController: UIViewController {
         thirdOptionButton.setTitle(quiz.options[2], for: UIControlState.normal)
         forthOptionButton.setTitle(quiz.options[3], for: UIControlState.normal)
         
-        playAgainButton.isHidden = true
+        nextAction.isHidden = true
         responser.isHidden = true
     }
     
@@ -83,18 +119,20 @@ class ViewController: UIViewController {
         thirdOptionButton.isHidden = true
         forthOptionButton.isHidden = true
         
-        // Display play again button
-        playAgainButton.isHidden = false
+        // Hide the responser
+        responser.isHidden = true
         
+        // Display play again button
+        nextAction.isHidden = false
+        
+        // Display score
         questionField.text = "Way to go!\nYou got \(correctQuestions) out of \(questionsPerRound) correct!"
         
+        // Change next action button text to play again
+        nextAction.setTitle("Play Again", for: UIControlState.normal)
     }
     
     @IBAction func checkAnswer(_ sender: UIButton) {
-//        firstOptionButton.titleLabel?.alpha = 0.5
-//        secondOptionButton.titleLabel?.alpha = 0.5
-//        thirdOptionButton.titleLabel?.alpha = 0.5
-//        forthOptionButton.titleLabel?.alpha = 0.5
         firstOptionButton.isEnabled = false
         secondOptionButton.isEnabled = false
         thirdOptionButton.isEnabled = false
@@ -104,49 +142,48 @@ class ViewController: UIViewController {
         
         // Increment the questions asked counter
         questionsAsked += 1
-        
+        // Get the current question asked
         let selectedQuestion = trivia[indexOfSelectedQuestion]
+        // Get the correct answer of last question asked
         let correctAnswer = selectedQuestion.correctAnswer
         
-        
+        // Check if selected option match the correct answer
         if (sender.currentTitle == correctAnswer) {
+            // Correct Answer
             responser.isHidden = false
             correctQuestions += 1
             responser.text = "Correct!"
             responser.textColor =  UIColor.cyan
         } else {
+            // Wrong Answer
             responser.isHidden = false
             responser.text = "Sorry, wrong answer!"
             responser.textColor = UIColor.orange
         }
-        
-        
-//        loadNextRoundWithDelay(seconds: 1)
-    }
-    
-    func nextRound() {
-        firstOptionButton.isHidden = false
-        secondOptionButton.isHidden = false
-        thirdOptionButton.isHidden = false
-        forthOptionButton.isHidden = false
-        
+
         if questionsAsked == questionsPerRound {
             // Game is over
-            displayScore()
+            nextAction.isHidden = false
+            nextAction.setTitle("See My Score", for: UIControlState.normal)
         } else {
             // Continue game
-            displayQuestion()
+            nextAction.isHidden = false
+            nextAction.setTitle("Next Question", for: UIControlState.normal)
         }
+        
     }
     
+    /* To start the quiz over:
+     * reset the number of questions asked to 0
+     * reset the number of correct Questions to 0
+     * reset selected questions collection to empty
+     * display next random question
+     */
     @IBAction func playAgain() {
-//        // Show the answer buttons
-//        trueButton.isHidden = false
-//        falseButton.isHidden = false
-//        
         questionsAsked = 0
         correctQuestions = 0
-        nextRound()
+        selectedQuestions = []
+        displayQuestion()
     }
     
 
@@ -161,7 +198,7 @@ class ViewController: UIViewController {
         
         // Executes the nextRound method at the dispatch time on the main queue
         DispatchQueue.main.asyncAfter(deadline: dispatchTime) {
-            self.nextRound()
+            self.displayQuestion()
         }
     }
     

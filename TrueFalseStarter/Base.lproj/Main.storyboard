@@ -127,14 +127,13 @@
                                 </constraints>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="16"/>
                                 <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <state key="normal" title="Play Again"/>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
                                         <integer key="value" value="20"/>
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
                                 <connections>
-                                    <action selector="playAgain" destination="BYZ-38-t0r" eventType="touchUpInside" id="klz-B2-JAN"/>
+                                    <action selector="getAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="f7G-Zq-Ai5"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -169,7 +168,7 @@
                     <connections>
                         <outlet property="firstOptionButton" destination="J1V-MS-ECi" id="RfL-1U-Gd8"/>
                         <outlet property="forthOptionButton" destination="BcF-IJ-ElN" id="yuH-EW-ujY"/>
-                        <outlet property="playAgainButton" destination="K17-uy-MvB" id="0Bx-Cm-ye0"/>
+                        <outlet property="nextAction" destination="K17-uy-MvB" id="Y2k-4w-HEr"/>
                         <outlet property="questionField" destination="I3V-ih-1Ky" id="7UI-o2-ATi"/>
                         <outlet property="responser" destination="y6w-EJ-uIi" id="9Y6-w0-RDr"/>
                         <outlet property="secondOptionButton" destination="AS4-HX-g9f" id="44G-1c-CW4"/>
